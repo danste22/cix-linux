@@ -1,0 +1,15 @@
+Source: cix-o6n-repo
+Section: admin
+Priority: optional
+Maintainer: Daniel <danste22@users.noreply.github.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.2
+Homepage: https://github.com/danste22/cix-linux
+
+Package: cix-o6n-repo
+Architecture: all
+Depends: ${misc:Depends}
+Description: apt repository configuration for O6N Debian packages
+ Installs the build.opensuse.org signing key and signed-by apt source for the
+ O6N Debian 13 package repository. It does not install an apt preference pin.

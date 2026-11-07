@@ -1,0 +1,13 @@
+O6N OBS repository bootstrap
+============================
+
+Verify the key in this package before installation:
+
+  153D A567 0563 C430 55B8  2A20 8F66 A7C1 646C C2EA
+
+The expected identity is:
+
+  home:danste22 OBS Project <home:danste22@build.opensuse.org>
+
+The key was fetched from the build.opensuse.org home:danste22 signing-key
+endpoint. Do not install this package if the fingerprint differs.

@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+x-build-volumes: &build-volumes
+  - .:/workspace:ro
+  - ${CIX_BUILD_ROOT}/downloads:/workspace/downloads
+  - ${CIX_BUILD_ROOT}/src:/workspace/src
+  - ${CIX_BUILD_ROOT}/upstream:/workspace/upstream
+  - ${CIX_BUILD_ROOT}/artifacts:/workspace/artifacts
+
+x-service: &service
+  platform: linux/arm64
+  working_dir: /workspace
+  env_file: refs.env
+  volumes: *build-volumes
+
+services:
+  source:
+    <<: *service
+    build:
+      context: .
+      dockerfile: docker/base/Dockerfile
+
+  kernel:
+    <<: *service
+    build:
+      context: .
+      dockerfile: docker/kernel/Dockerfile
+
+  dkms:
+    <<: *service
+    build:
+      context: .
+      dockerfile: docker/dkms/Dockerfile
+
+  repo-builder:
+    <<: *service
+    build:
+      context: .
+      dockerfile: docker/repo/Dockerfile
+    volumes:
+      - .:/workspace:ro
+      - ${CIX_BUILD_ROOT}/artifacts:/workspace/artifacts
+      - ${CIX_BUILD_ROOT}/keys:/workspace/keys
+
+  repo:
+    platform: linux/arm64
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ${CIX_BUILD_ROOT}/artifacts/repo:/usr/share/nginx/html:ro
+
+  sof:
+    <<: *service
+    profiles: ["sof"]
+    build:
+      context: .
+      dockerfile: docker/sof/Dockerfile

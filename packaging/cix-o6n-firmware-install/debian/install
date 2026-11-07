@@ -1,0 +1,3 @@
+cix-o6n-firmware-fetch usr/sbin/
+manifest.txt usr/share/cix-o6n-firmware/
+README.firmware.txt usr/share/doc/cix-o6n-firmware-install/

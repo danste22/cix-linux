@@ -1,0 +1,25 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+set -eu
+
+if [ "${1:-}" = purge ]; then
+    manifest='/var/lib/cix-o6n-firmware/installed-manifest.txt'
+    if [ -f "${manifest}" ]; then
+        while IFS='|' read -r path sha256 url; do
+            case "${path}" in
+                ''|'#'*) continue ;;
+                */*|.|..) continue ;;
+            esac
+            installed="/lib/firmware/${path}"
+            if [ -f "${installed}" ] \
+               && printf '%s  %s\n' "${sha256}" "${installed}" \
+                    | sha256sum --check --status -; then
+                rm -f "${installed}"
+            fi
+        done < "${manifest}"
+    fi
+    rm -rf /var/lib/cix-o6n-firmware
+fi
+
+exit 0

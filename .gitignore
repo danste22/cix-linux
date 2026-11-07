@@ -1,0 +1,27 @@
+# Generated local and external-volume state
+.env
+artifacts/
+downloads/
+src/
+upstream/
+build/
+
+# Local signing material
+keys/
+*.key
+*.priv
+*.p12
+
+# Debian build output
+*.build
+*.buildinfo
+*.changes
+*.deb
+*.dsc
+*.tar.xz
+*.tar.zst
+
+# Editors and operating systems
+.DS_Store
+.idea/
+*.swp
