@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+set -Eeuo pipefail
+
+manifest='/usr/share/cix-o6n-firmware/manifest.txt'
+state_dir='/var/lib/cix-o6n-firmware'
+staging="${state_dir}/staging"
+firmware_dir='/lib/firmware'
+
+die() {
+  printf 'cix-o6n-firmware-fetch: %s\n' "$*" >&2
+  exit 1
+}
+
+[[ "$(id -u)" -eq 0 ]] || die 'must run as root'
+[[ -f "${manifest}" ]] || die "missing manifest: ${manifest}"
+
+rm -rf "${staging}"
+install -d -m 0755 "${staging}"
+
+count=0
+while IFS='|' read -r path sha256 url; do
+  [[ -z "${path}" || "${path}" == \#* ]] && continue
+  [[ "${path}" != */* && "${path}" != "." && "${path}" != ".." ]] \
+    || die "unsafe destination: ${path}"
+  [[ "${sha256}" =~ ^[0-9a-f]{64}$ ]] || die "bad sha256 for ${path}"
+  [[ "${url}" == https://* ]] || die "non-HTTPS URL for ${path}"
+
+  curl --fail --location --retry 3 --output "${staging}/${path}.part" "${url}"
+  printf '%s  %s\n' "${sha256}" "${staging}/${path}.part" \
+    | sha256sum --check --status - \
+    || die "sha256 mismatch: ${path}"
+  mv "${staging}/${path}.part" "${staging}/${path}"
+  count=$((count + 1))
+done < "${manifest}"
+
+[[ "${count}" -eq 17 ]] || die "expected 17 files, got ${count}"
+
+install -d -m 0755 "${firmware_dir}"
+while IFS='|' read -r path _ _; do
+  [[ -z "${path}" || "${path}" == \#* ]] && continue
+  install -m 0644 "${staging}/${path}" "${firmware_dir}/${path}.new"
+done < "${manifest}"
+
+while IFS='|' read -r path _ _; do
+  [[ -z "${path}" || "${path}" == \#* ]] && continue
+  mv "${firmware_dir}/${path}.new" "${firmware_dir}/${path}"
+done < "${manifest}"
+
+install -m 0644 "${manifest}" "${state_dir}/installed-manifest.txt"
+rm -rf "${staging}"
+printf 'installed %d verified O6N firmware files\n' "${count}"

@@ -1,0 +1,20 @@
+Source: cix-o6n-firmware-install
+Section: non-free-firmware/admin
+Priority: optional
+Maintainer: Daniel <danste22@users.noreply.github.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.2
+Homepage: https://github.com/danste22/cix-linux
+
+Package: cix-o6n-firmware-install
+Architecture: all
+Depends:
+ ca-certificates,
+ curl,
+ firmware-misc-nonfree (>= 20260916-1~bpo13+1),
+ ${misc:Depends},
+Description: verified firmware installer for the Radxa Orion O6N
+ Downloads the pinned CIX DSP and VPU firmware from its upstream repository,
+ verifies every sha256, and then installs the complete set. This package does
+ not contain firmware bytes. Mali firmware is supplied by Debian.

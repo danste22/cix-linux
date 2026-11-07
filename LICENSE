@@ -1,0 +1,10 @@
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Original files in this repository are licensed under the GNU General Public
+License, version 3 or (at your option) any later version:
+
+https://www.gnu.org/licenses/gpl-3.0.html
+
+Imported or modified Linux kernel and Debian kernel-packaging material remains
+under its original GPL-2.0-only licence and retains its own copyright notices
+and SPDX identifiers.
