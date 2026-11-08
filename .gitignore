@@ -1,10 +1,13 @@
-# Generated local and external-volume state
+# Generated project-local state
 .env
 PLAN.md
 prjconf.txt
 artifacts/
+ccache/
 downloads/
+logs/
 src/
+tmp/
 upstream/
 build/
 

@@ -8,10 +8,14 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${PROJECT_ROOT}/refs.env"
 
 mkdir -p \
+  "${PROJECT_ROOT}/artifacts" \
+  "${PROJECT_ROOT}/build" \
+  "${PROJECT_ROOT}/ccache" \
   "${PROJECT_ROOT}/downloads" \
-  "${CIX_BUILD_ROOT}/artifacts" \
-  "${CIX_BUILD_ROOT}/keys" \
-  "${CIX_BUILD_ROOT}/src" \
-  "${CIX_BUILD_ROOT}/upstream"
+  "${PROJECT_ROOT}/keys" \
+  "${PROJECT_ROOT}/logs" \
+  "${PROJECT_ROOT}/src" \
+  "${PROJECT_ROOT}/tmp" \
+  "${PROJECT_ROOT}/upstream"
 
-printf 'workspace ready: %s\n' "${CIX_BUILD_ROOT}"
+printf 'workspace ready: %s\n' "${PROJECT_ROOT}"

@@ -17,14 +17,20 @@ No kernel, DKMS module, firmware package, or container image has been built.
 
 ## Local workspace
 
-Firmware downloads stay inside the project and are ignored by git:
+All generated state stays inside the project and is ignored by git:
 
 ```text
-/Users/daniel/IdeaProjects/cix-linux/downloads/firmware/
+/Users/daniel/IdeaProjects/cix-linux/
+├── artifacts/
+├── build/
+├── ccache/
+├── downloads/
+├── keys/
+├── logs/
+├── src/
+├── tmp/
+└── upstream/
 ```
-
-Large generated kernel source, build artifacts and upstream working copies use
-the external build root configured in `refs.env`.
 
 Use `make help` to list the staged commands. Build targets are intentionally
 guarded until their later execution gates are approved.

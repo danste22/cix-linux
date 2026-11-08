@@ -3,9 +3,9 @@
 x-build-volumes: &build-volumes
   - .:/workspace:ro
   - ./downloads:/workspace/downloads
-  - ${CIX_BUILD_ROOT}/src:/workspace/src
-  - ${CIX_BUILD_ROOT}/upstream:/workspace/upstream
-  - ${CIX_BUILD_ROOT}/artifacts:/workspace/artifacts
+  - ./src:/workspace/src
+  - ./upstream:/workspace/upstream
+  - ./artifacts:/workspace/artifacts
 
 x-service: &service
   platform: linux/arm64
@@ -39,8 +39,8 @@ services:
       dockerfile: docker/repo/Dockerfile
     volumes:
       - .:/workspace:ro
-      - ${CIX_BUILD_ROOT}/artifacts:/workspace/artifacts
-      - ${CIX_BUILD_ROOT}/keys:/workspace/keys
+      - ./artifacts:/workspace/artifacts
+      - ./keys:/workspace/keys
 
   repo:
     platform: linux/arm64
@@ -48,7 +48,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ${CIX_BUILD_ROOT}/artifacts/repo:/usr/share/nginx/html:ro
+      - ./artifacts/repo:/usr/share/nginx/html:ro
 
   sof:
     <<: *service

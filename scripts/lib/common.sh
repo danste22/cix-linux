@@ -10,8 +10,6 @@ if [[ -f "${PROJECT_ROOT}/refs.env" ]]; then
   source "${PROJECT_ROOT}/refs.env"
 fi
 
-: "${CIX_BUILD_ROOT:=/workspace}"
-
 DOWNLOADS_DIR="${DOWNLOADS_DIR:-${PROJECT_ROOT}/downloads}"
 SRC_DIR="${SRC_DIR:-${PROJECT_ROOT}/src}"
 UPSTREAM_DIR="${UPSTREAM_DIR:-${PROJECT_ROOT}/upstream}"
