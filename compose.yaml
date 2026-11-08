@@ -2,7 +2,7 @@
 
 x-build-volumes: &build-volumes
   - .:/workspace:ro
-  - ${CIX_BUILD_ROOT}/downloads:/workspace/downloads
+  - ./downloads:/workspace/downloads
   - ${CIX_BUILD_ROOT}/src:/workspace/src
   - ${CIX_BUILD_ROOT}/upstream:/workspace/upstream
   - ${CIX_BUILD_ROOT}/artifacts:/workspace/artifacts
