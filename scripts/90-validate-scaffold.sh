@@ -37,10 +37,13 @@ for line in entries:
         raise SystemExit(f"invalid manifest entry: {line}")
 PY
 
-if find "${PROJECT_ROOT}" -type f \
-     \( -name '*.fwb' -o -name 'dsp_fw.bin' -o -name 'mali_csffw.bin' \) \
-     -print -quit | grep -q .; then
+tracked_firmware="$(
+  git -C "${PROJECT_ROOT}" ls-files \
+    '*.fwb' 'dsp_fw.bin' 'mali_csffw.bin'
+)"
+if [[ -n "${tracked_firmware}" ]]; then
   printf 'firmware bytes must not be committed\n' >&2
+  printf '%s\n' "${tracked_firmware}" >&2
   exit 1
 fi
 
@@ -57,4 +60,4 @@ if command -v docker >/dev/null 2>&1; then
     -f "${PROJECT_ROOT}/compose.yaml" config --quiet
 fi
 
-printf 'Gate 2 scaffold validation passed\n'
+printf 'scaffold validation passed\n'

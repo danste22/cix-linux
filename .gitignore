@@ -1,5 +1,7 @@
 # Generated local and external-volume state
 .env
+PLAN.md
+prjconf.txt
 artifacts/
 downloads/
 src/

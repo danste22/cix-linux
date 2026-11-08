@@ -8,8 +8,8 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${PROJECT_ROOT}/refs.env"
 
 mkdir -p \
+  "${PROJECT_ROOT}/downloads" \
   "${CIX_BUILD_ROOT}/artifacts" \
-  "${CIX_BUILD_ROOT}/downloads" \
   "${CIX_BUILD_ROOT}/keys" \
   "${CIX_BUILD_ROOT}/src" \
   "${CIX_BUILD_ROOT}/upstream"

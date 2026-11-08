@@ -3,22 +3,28 @@
 Debian trixie-backports kernel and companion packages for the Radxa Orion O6N.
 
 This repository contains build tooling and packaging only. It does not contain
-proprietary firmware. See `PLAN.md` for the approved design and
+proprietary firmware. See
 `docs/adr/0001-firmware-fetched-at-install-not-shipped.md` for the firmware
 decision.
 
-## Gate 2 status
+## Gate status
 
-The repository is scaffolded, but no kernel, DKMS module, firmware package, or
-container image has been built yet.
+- Gate 2: repository scaffold complete.
+- Gate 3: all 17 pinned CIX firmware files downloaded and independently
+  SHA-256 verified (6,193,664 bytes total).
+
+No kernel, DKMS module, firmware package, or container image has been built.
 
 ## Local workspace
 
-Generated source, downloads and artifacts live under:
+Firmware downloads stay inside the project and are ignored by git:
 
 ```text
-/Volumes/M1 MBP/cix-linux
+/Users/daniel/IdeaProjects/cix-linux/downloads/firmware/
 ```
+
+Large generated kernel source, build artifacts and upstream working copies use
+the external build root configured in `refs.env`.
 
 Use `make help` to list the staged commands. Build targets are intentionally
 guarded until their later execution gates are approved.
