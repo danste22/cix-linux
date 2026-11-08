@@ -10,7 +10,7 @@ help:
 	@printf '%s\n' \
 	  'Gate 2 scaffold (no build has run)' \
 	  '' \
-	  '  make init          create external workspace directories' \
+	  '  make init          create project-local workspace directories' \
 	  '  make fetch         download and verify Debian/CIX source inputs' \
 	  '  make source        assemble the patched Debian source tree' \
 	  '  make config        prepare the Debian + CIX kernel config' \
