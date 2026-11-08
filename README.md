@@ -3,7 +3,7 @@
 Debian trixie-backports kernel and companion packages for the Radxa Orion O6N.
 
 This repository contains build tooling and packaging only. It does not contain
-proprietary firmware. See `PLAN.md` for the approved design and
+proprietary firmware. See
 `docs/adr/0001-firmware-fetched-at-install-not-shipped.md` for the firmware
 decision.
 
