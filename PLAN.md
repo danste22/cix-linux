@@ -271,8 +271,8 @@ Checks before use on the O6N:
 ## Execution gates (your approval per step)
 
 1. DONE: plan reviewed; external build location `/Volumes/M1 MBP`; Mali source and GPU ID confirmed.
-2. Approve scaffolding: `scripts/`, `docker/`, `compose.yaml`, `Makefile`, `refs.env`, `firmware/`, `packaging/`. No builds.
-3. Approve firmware fetch (downloads ~5 MB from pinned repo) and sha256 manifest creation.
+2. DONE: scaffolded `scripts/`, `docker/`, `compose.yaml`, `Makefile`, `refs.env`, `firmware/`, and `packaging/`; committed as `123756c`. No builds.
+3. DONE 2026-11-08: downloaded all 17 pinned CIX firmware files to the project-local, gitignored `downloads/firmware/`; independently verified every manifest sha256 and exact file set (6,193,664 bytes total). No firmware bytes entered git.
 4. Approve Docker builds (after RAM and disk changes below).
 5. OBS repository probe DONE in `home:danste22:o6n-debian-13`. Later approval still required for the kernel package, watcher workflows, scoped token, and production build.
 
@@ -281,6 +281,7 @@ Checks before use on the O6N:
 Closed:
 
 - Disk: external build volume `/Volumes/M1 MBP` (931 GiB free). System volume 17 GiB free, images and build cache stay there (sparse VM disk, cap 128 GiB). `/Volumes/MBP-DS` is the Time Machine disk, not used.
+- Firmware downloads are small and stay under the project-local, gitignored `downloads/`; large source trees, upstream working copies and artifacts remain on the configured external build root.
 - Docker RAM: 16 GiB confirmed (`MemTotal` 15.6 GiB), 14 CPUs.
 - 16 `.fwb` files: all sha256-identical to the SDK deb. Closed.
 - Build time: expected for a kernel build. Not a risk.
