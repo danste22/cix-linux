@@ -10,7 +10,8 @@ RUN printf '%s\n' \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
       ca-certificates curl debian-keyring devscripts dpkg-dev git gnupg \
-      jq openssl quilt rsync xz-utils \
+      jq libarchive-tools libdistro-info-perl openssl python3 \
+      python3-dacite python3-jinja2 quilt rsync xz-utils \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace

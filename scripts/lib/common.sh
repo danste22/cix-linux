@@ -31,6 +31,12 @@ require_file() {
 fetch_file() {
   local url="$1" destination="$2" sha256="$3"
   mkdir -p "$(dirname "${destination}")"
+  if [[ -f "${destination}" ]] \
+     && printf '%s  %s\n' "${sha256}" "${destination}" \
+          | sha256sum --check --status -; then
+    printf 'reusing verified file: %s\n' "${destination}"
+    return
+  fi
   curl --fail --location --retry 3 --output "${destination}.part" "${url}"
   printf '%s  %s\n' "${sha256}" "${destination}.part" | sha256sum --check -
   mv "${destination}.part" "${destination}"
@@ -38,6 +44,11 @@ fetch_file() {
 
 checkout_commit() {
   local repository="$1" commit="$2" destination="$3"
+  if [[ -d "${destination}/.git" ]] \
+     && [[ "$(git -C "${destination}" rev-parse HEAD 2>/dev/null)" == "${commit}" ]]; then
+    printf 'reusing pinned checkout: %s @ %s\n' "${destination}" "${commit}"
+    return
+  fi
   rm -rf "${destination}"
   git init --quiet "${destination}"
   git -C "${destination}" remote add origin "${repository}"

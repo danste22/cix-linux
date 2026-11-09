@@ -9,7 +9,7 @@ source "${SCRIPT_DIR}/lib/common.sh"
 package_source="${SRC_DIR}/cix-o6n-repo"
 rm -rf "${package_source}"
 mkdir -p "${package_source}"
-rsync -a "${PROJECT_ROOT}/packaging/cix-o6n-repo/" "${package_source}/"
+cp -a "${PROJECT_ROOT}/packaging/cix-o6n-repo/." "${package_source}/"
 
 (
   cd "${package_source}"
@@ -18,10 +18,13 @@ rsync -a "${PROJECT_ROOT}/packaging/cix-o6n-repo/" "${package_source}/"
 
 destination="${ARTIFACTS_DIR}/repo-package"
 mkdir -p "${destination}"
-find "${SRC_DIR}" -maxdepth 1 -type f \
-  \( -name 'cix-o6n-repo_*.deb' \
-     -o -name 'cix-o6n-repo_*.changes' \
-     -o -name 'cix-o6n-repo_*.buildinfo' \) \
-  -exec cp -v {} "${destination}/" \;
+shopt -s nullglob
+packages=(
+  "${SRC_DIR}"/cix-o6n-repo_*.deb
+  "${SRC_DIR}"/cix-o6n-repo_*.changes
+  "${SRC_DIR}"/cix-o6n-repo_*.buildinfo
+)
+(( ${#packages[@]} > 0 )) || die "repository package build produced no packages"
+cp -v "${packages[@]}" "${destination}/"
 
 printf 'repository package artifacts: %s\n' "${destination}"

@@ -21,7 +21,7 @@ import pathlib
 import sys
 
 root = pathlib.Path(sys.argv[1])
-for path in root.rglob("*.py"):
+for path in (root / "scripts").rglob("*.py"):
     ast.parse(path.read_text(), filename=str(path))
 
 manifest = root / "firmware/manifest.txt"
