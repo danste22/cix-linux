@@ -1,0 +1,45 @@
+<services>
+  <!-- Source service has network. The later build runs debian/rules offline. -->
+  <service name="obs_scm">
+    <param name="url">https://github.com/danste22/cix-linux.git</param>
+    <param name="scm">git</param>
+    <param name="revision">main</param>
+    <param name="version">_none_</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">deb.debian.org</param>
+    <param name="path">/debian/pool/main/l/linux/linux_7.2.12-1~bpo13+1.dsc</param>
+    <param name="filename">linux_7.2.12-1~bpo13+1.dsc</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">deb.debian.org</param>
+    <param name="path">/debian/pool/main/l/linux/linux_7.2.12.orig.tar.xz</param>
+    <param name="filename">linux_7.2.12.orig.tar.xz</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">deb.debian.org</param>
+    <param name="path">/debian/pool/main/l/linux/linux_7.2.12-1~bpo13+1.debian.tar.xz</param>
+    <param name="filename">linux_7.2.12-1~bpo13+1.debian.tar.xz</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">github.com</param>
+    <param name="path">/danste22/cix-linux-main/archive/695c93e169e83a852f2127d142a1e6993cb9e0fa.tar.gz</param>
+    <param name="filename">695c93e169e83a852f2127d142a1e6993cb9e0fa.tar.gz</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">github.com</param>
+    <param name="path">/danste22/cix_opensource__npu_driver/archive/31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz</param>
+    <param name="filename">31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">github.com</param>
+    <param name="path">/danste22/cix_opensource__vpu_driver/archive/eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz</param>
+    <param name="filename">eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz</param>
+  </service>
+</services>

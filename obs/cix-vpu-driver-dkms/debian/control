@@ -1,0 +1,20 @@
+Source: cix-vpu-driver-dkms
+Section: misc
+Priority: optional
+Maintainer: Daniel <danste22@users.noreply.github.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13), devscripts, dh-exec, dh-sequence-dkms, python3
+Standards-Version: 4.7.2
+Homepage: https://github.com/danste22/cix-linux
+
+Package: cix-vpu-driver-dkms
+Architecture: all
+Depends: cix-o6n-firmware-install, dkms (>= 2.1.0.0)
+Description: DKMS source for the CIX VPU driver
+ Builds the O6N VPU module from the pinned upstream commit.
+ Firmware bytes are removed before packaging.
+
+Package: cix-vpu-libc-dev
+Architecture: all
+Description: uAPI headers for the CIX VPU driver
+ GPL headers for the O6N VPU driver. This package contains no firmware.

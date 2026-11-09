@@ -1,0 +1,9 @@
+Package: linux-headers-o6n{{localversion}}
+Meta-Rules-Target: meta
+Meta-Rules-Makeflags: INSTALLDOCS_LINK_DOC=linux-base-{{abiname}}{{localversion}}
+Depends:
+ linux-headers-{{abiname}}{{localversion}} (= ${binary:Version}),
+ ${misc:Depends},
+Description: Linux headers for the Radxa Orion O6N (meta-package)
+ This package depends on the latest O6N kernel headers.
+ It does not use the Debian linux-headers-arm64 package name.

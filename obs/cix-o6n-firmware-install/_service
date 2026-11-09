@@ -1,0 +1,9 @@
+<services>
+  <service name="obs_scm">
+    <param name="url">https://github.com/danste22/cix-linux.git</param>
+    <param name="scm">git</param>
+    <param name="revision">main</param>
+    <param name="version">_none_</param>
+    <param name="subdir">packaging/cix-o6n-firmware-install</param>
+  </service>
+</services>

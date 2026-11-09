@@ -1,0 +1,9 @@
+Package: linux-image-o6n{{localversion}}
+Meta-Rules-Target: meta
+Meta-Rules-Makeflags: INSTALLDOCS_LINK_DOC=linux-base-{{abiname}}{{localversion}}
+Depends:
+ linux-image-{{abiname}}{{localversion}} (= ${binary:Version}),
+ ${misc:Depends},
+Description: Linux for the Radxa Orion O6N (meta-package)
+ This package depends on the latest O6N kernel image and modules.
+ It does not use the Debian linux-image-arm64 package name.

@@ -1,0 +1,34 @@
+#!/usr/bin/make -f
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+build:
+	rm -rf upstream
+	mkdir upstream
+	tar -C upstream --strip-components=1 -xf *.tar.gz
+	rm -rf upstream/firmware-binaries
+	rm -f upstream/debian/cix-vpu-firmware.install \
+	  upstream/debian/cix-vpu-firmware.lintian-overrides
+	python3 debian/strip_vpu_firmware.py upstream
+	if ! grep -q '^override_dh_auto_clean:' upstream/debian/rules; then \
+	  printf '\noverride_dh_auto_clean:\n\ttrue\n' >> upstream/debian/rules; \
+	fi
+	cd upstream && DEBEMAIL=build@o6n.invalid DEBFULLNAME='O6N Kernel Builder' \
+	  EDITOR=true VISUAL=true \
+	  dch --local o6n --distribution trixie-backports \
+	  'Rebuild for the O6N Debian 13 repository.'
+	cd upstream && dpkg-buildpackage --build=binary --no-sign
+
+binary: build
+	cp -a -- *.deb ..
+	cp upstream/debian/files debian/files
+
+binary-arch: binary
+binary-indep: binary
+
+clean:
+	if [ -f debian/files ]; then \
+	  while read -r name _; do rm -f "../$$name"; done < debian/files; \
+	fi
+	rm -rf upstream debian/files
+
+.PHONY: build binary binary-arch binary-indep clean

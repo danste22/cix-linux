@@ -21,7 +21,7 @@ import pathlib
 import sys
 
 root = pathlib.Path(sys.argv[1])
-for path in root.rglob("*.py"):
+for path in (root / "scripts").rglob("*.py"):
     ast.parse(path.read_text(), filename=str(path))
 
 manifest = root / "firmware/manifest.txt"
@@ -46,6 +46,19 @@ if [[ -n "${tracked_firmware}" ]]; then
   printf '%s\n' "${tracked_firmware}" >&2
   exit 1
 fi
+
+cmp -s "${PROJECT_ROOT}/firmware/manifest.txt" \
+  "${PROJECT_ROOT}/packaging/cix-o6n-firmware-install/manifest.txt" \
+  || { printf 'firmware manifest copy is stale\n' >&2; exit 1; }
+cmp -s "${PROJECT_ROOT}/firmware/README.firmware.txt" \
+  "${PROJECT_ROOT}/packaging/cix-o6n-firmware-install/README.firmware.txt" \
+  || { printf 'firmware readme copy is stale\n' >&2; exit 1; }
+cmp -s "${PROJECT_ROOT}/scripts/lib/strip_vpu_firmware.py" \
+  "${PROJECT_ROOT}/obs/cix-vpu-driver-dkms/debian/strip_vpu_firmware.py" \
+  || { printf 'VPU strip script copy is stale\n' >&2; exit 1; }
+grep -q '^Suites: \./$' \
+  "${PROJECT_ROOT}/packaging/cix-o6n-repo/o6n-debian-13.sources" \
+  || { printf 'OBS apt source must use Suites: ./\n' >&2; exit 1; }
 
 fingerprint="$(
   gpg --show-keys --with-colons \
