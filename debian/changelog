@@ -1,0 +1,5 @@
+linux-cix (7.2.12-1~bpo13+1+o6n1) trixie-backports; urgency=medium
+
+  * Build the arm64 O6N kernel from the pinned Debian source package.
+
+ -- Daniel <danste22@users.noreply.github.com>  Mon, 10 Nov 2026 00:00:00 +0100

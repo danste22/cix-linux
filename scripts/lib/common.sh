@@ -44,9 +44,23 @@ fetch_file() {
 
 checkout_commit() {
   local repository="$1" commit="$2" destination="$3"
+  local stamp="${destination}/.o6n-commit"
+  local archive="${destination}.tar.gz"
   if [[ -d "${destination}/.git" ]] \
      && [[ "$(git -C "${destination}" rev-parse HEAD 2>/dev/null)" == "${commit}" ]]; then
     printf 'reusing pinned checkout: %s @ %s\n' "${destination}" "${commit}"
+    return
+  fi
+  if [[ -f "${stamp}" ]] && [[ "$(cat "${stamp}")" == "${commit}" ]]; then
+    printf 'reusing pinned archive: %s @ %s\n' "${destination}" "${commit}"
+    return
+  fi
+  if [[ -f "${archive}" ]]; then
+    rm -rf "${destination}"
+    mkdir -p "${destination}"
+    bsdtar -C "${destination}" --strip-components=1 -xf "${archive}"
+    printf '%s\n' "${commit}" > "${stamp}"
+    printf 'unpacked pinned archive: %s\n' "${archive}"
     return
   fi
   rm -rf "${destination}"

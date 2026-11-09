@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+# SPDX-License-Identifier: GPL-3.0-or-later
+# OBS entry for linux-cix. The local Docker chain remains the Makefile.
+
+build:
+	mkdir -p downloads/debian upstream
+	for file in linux_7.2.12-1~bpo13+1.dsc linux_7.2.12.orig.tar.xz \
+		linux_7.2.12-1~bpo13+1.debian.tar.xz; do \
+	  if [ -f $$file ]; then mv $$file downloads/debian/; fi; \
+	done
+	if [ -f 695c93e169e83a852f2127d142a1e6993cb9e0fa.tar.gz ]; then \
+	  mv 695c93e169e83a852f2127d142a1e6993cb9e0fa.tar.gz \
+	    upstream/cix-linux-main.tar.gz; \
+	fi
+	if [ -f 31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz ]; then \
+	  mv 31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz \
+	    upstream/cix-npu-driver.tar.gz; \
+	fi
+	if [ -f eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz ]; then \
+	  mv eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz \
+	    upstream/cix-vpu-driver.tar.gz; \
+	fi
+	./scripts/10-fetch-upstream.sh
+	./scripts/20-assemble-source.sh
+	./scripts/21-kernel-config.sh
+	./scripts/30-build-kernel.sh
+
+binary: build
+	python3 scripts/lib/collect-kernel-debs.py "$(CURDIR)"
+
+binary-arch: binary
+binary-indep: binary
+
+clean:
+	if [ -f debian/files ]; then \
+	  while read -r name _; do rm -f "../$$name"; done < debian/files; \
+	fi
+	rm -rf src/linux debian/files
+
+.PHONY: build binary binary-arch binary-indep clean

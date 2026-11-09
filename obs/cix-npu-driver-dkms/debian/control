@@ -1,0 +1,15 @@
+Source: cix-npu-driver-dkms
+Section: misc
+Priority: optional
+Maintainer: Daniel <danste22@users.noreply.github.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13), devscripts, dh-exec, dh-sequence-dkms
+Standards-Version: 4.7.2
+Homepage: https://github.com/danste22/cix-linux
+
+Package: cix-npu-driver-dkms
+Architecture: all
+Depends: dkms (>= 2.1.0.0)
+Description: DKMS source for the CIX NPU driver
+ Builds the O6N NPU module from the pinned upstream commit.
+ The package contains no firmware.

@@ -1,0 +1,80 @@
+Source: linux-cix
+Section: kernel
+Priority: optional
+Maintainer: Daniel <danste22@users.noreply.github.com>
+Rules-Requires-Root: no
+Build-Depends:
+ bc,
+ bindgen,
+ bison,
+ ca-certificates,
+ cpio,
+ curl,
+ debhelper-compat (= 13),
+ debian-keyring,
+ devscripts,
+ flex,
+ gcc-14-for-host,
+ gcc-arm-linux-gnueabihf,
+ git,
+ kmod,
+ libelf-dev,
+ libssl-dev,
+ pahole,
+ python3,
+ python3-dacite,
+ python3-jinja2,
+ quilt,
+ rsync,
+ rust-src,
+ rustc,
+ xz-utils
+Standards-Version: 4.7.2
+Homepage: https://github.com/danste22/cix-linux
+
+Package: linux-image-o6n-arm64
+Architecture: arm64
+Depends: linux-image-7.2.12+deb13o6n.1-arm64 (= ${binary:Version})
+Description: Linux image for the Radxa Orion O6N (meta-package)
+ Depends on the current O6N kernel image. This is not linux-image-arm64.
+
+Package: linux-headers-o6n-arm64
+Architecture: arm64
+Depends: linux-headers-7.2.12+deb13o6n.1-arm64 (= ${binary:Version})
+Description: Linux headers for the Radxa Orion O6N (meta-package)
+ Depends on the current O6N kernel headers. This is not linux-headers-arm64.
+
+Package: linux-image-7.2.12+deb13o6n.1-arm64
+Architecture: arm64
+Description: Linux image for version 7.2.12+deb13o6n.1-arm64
+ O6N kernel image package. The build copies the Debian package of this name.
+
+Package: linux-headers-7.2.12+deb13o6n.1-arm64
+Architecture: arm64
+Description: Linux headers for version 7.2.12+deb13o6n.1-arm64
+ O6N kernel header package.
+
+Package: linux-headers-7.2.12+deb13o6n.1-common
+Architecture: all
+Description: Common Linux headers for version 7.2.12+deb13o6n.1
+ O6N common kernel header package.
+
+Package: linux-modules-7.2.12+deb13o6n.1-arm64
+Architecture: arm64
+Description: Linux modules for version 7.2.12+deb13o6n.1-arm64
+ O6N kernel module package.
+
+Package: linux-binary-7.2.12+deb13o6n.1-arm64
+Architecture: arm64
+Description: Linux binary image for version 7.2.12+deb13o6n.1-arm64
+ O6N kernel vmlinuz package.
+
+Package: linux-base-7.2.12+deb13o6n.1-arm64
+Architecture: arm64
+Description: Linux base for version 7.2.12+deb13o6n.1-arm64
+ O6N kernel base package.
+
+Package: linux-kbuild-7.2.12+deb13o6n.1
+Architecture: arm64
+Description: Linux kernel build tools for version 7.2.12+deb13o6n.1
+ O6N kbuild package.

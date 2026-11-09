@@ -1,0 +1,15 @@
+<services>
+  <service name="obs_scm">
+    <param name="url">https://github.com/danste22/cix-linux.git</param>
+    <param name="scm">git</param>
+    <param name="revision">main</param>
+    <param name="version">_none_</param>
+    <param name="subdir">obs/cix-vpu-driver-dkms</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">github.com</param>
+    <param name="path">/danste22/cix_opensource__vpu_driver/archive/eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz</param>
+    <param name="filename">eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz</param>
+  </service>
+</services>

@@ -8,5 +8,7 @@ published Debian source package is extracted:
 - `+deb13o6n` ABI identity
 - unique O6N image and header metapackages
 
-Gate 2 keeps those transformations in scripts. Generated Debian source does not
-belong in git.
+`scripts/lib/prepare_kernel_packaging.py` applies those transformations after
+the Debian source package is extracted. Generated Debian source does not
+belong in git. The O6N metapackage templates in this directory are copied into
+the extracted tree.

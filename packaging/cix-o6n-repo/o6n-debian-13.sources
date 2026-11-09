@@ -1,4 +1,4 @@
 Types: deb
 URIs: https://download.opensuse.org/repositories/home:/danste22:/o6n-debian-13/backports/
-Suites: /
+Suites: ./
 Signed-By: /usr/share/keyrings/o6n-debian-13.asc

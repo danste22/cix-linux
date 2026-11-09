@@ -1,0 +1,15 @@
+<services>
+  <service name="obs_scm">
+    <param name="url">https://github.com/danste22/cix-linux.git</param>
+    <param name="scm">git</param>
+    <param name="revision">main</param>
+    <param name="version">_none_</param>
+    <param name="subdir">obs/cix-npu-driver-dkms</param>
+  </service>
+  <service name="download_url">
+    <param name="protocol">https</param>
+    <param name="host">github.com</param>
+    <param name="path">/danste22/cix_opensource__npu_driver/archive/31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz</param>
+    <param name="filename">31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz</param>
+  </service>
+</services>

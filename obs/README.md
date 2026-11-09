@@ -2,14 +2,14 @@
 
 OBS project: `home:danste22:o6n-debian-13`
 
-Repository: `backports`, build architecture: `aarch64`.
-
-The Gate 2 scaffold does not upload or trigger OBS packages. `_service` files,
-package metadata, watcher workflows, failure polling, and the scoped runservice
-token belong to the later OBS gate.
-
-Project configuration currently requires:
+The project repository is named `backports`. Its public apt URL is:
 
 ```text
-Keep: linux-libc-dev
+https://download.opensuse.org/repositories/home:/danste22:/o6n-debian-13/backports/
 ```
+
+`obs/_config` is the project configuration to apply. It contains `Keep: linux-libc-dev` and no `Prefer:` line. These files do not upload or trigger a build.
+
+Source services download the pinned inputs. The build itself has no network. `debian/rules` at the repository root runs the existing kernel scripts for the `linux-cix` package. The NPU and VPU packages unpack the downloaded upstream archive, and the firmware and repository packages build from `packaging/`.
+
+Published kernel binaries are the `+deb13o6n` ABI packages plus `linux-image-o6n-arm64` and `linux-headers-o6n-arm64`. The build does not publish `linux-image-arm64`, `linux-headers-arm64`, `linux-base-arm64`, `linux-bpf-dev`, `linux-libc-dev`, debug packages, or installer udebs.
