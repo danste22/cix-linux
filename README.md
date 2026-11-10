@@ -226,6 +226,22 @@ sudo apt install cix-o6n-firmware-install cix-vpu-driver-dkms cix-vpu-libc-dev
 
 Do not let the two firmware ownership models coexist.
 
+## Debian source watcher
+
+`watch-debian.yml` runs daily. It verifies the signed trixie-backports
+source index and compares the newest `linux` source package with
+`refs.env`. A newer version opens one pull request on `watch/debian-linux`.
+That pull request changes the Debian version, filenames, and sha256 pins,
+and resets `O6N_PACKAGE_VERSION` to `+o6n1`. The CIX, NPU, VPU, and firmware
+pins stay as they are.
+
+Merging the pull request does not upload anything to OBS. Rebuild the
+`linux-cix` source package from the merged pins and upload that `.dsc`.
+
+`watch-obs.yml` reads the public `linux-cix` build status. It opens one
+issue when the result is failed or unresolvable, and closes that issue when
+the result succeeds.
+
 ## OBS repository key
 
 Before installing `cix-o6n-repo`, verify its embedded key fingerprint:
