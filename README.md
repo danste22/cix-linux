@@ -248,20 +248,9 @@ the result succeeds.
 version, after that version has passed the board gate. It verifies the signed
 OBS repository, downloads the `linux-cix` packages of that version, the
 `.dsc`, the Debian tarball, and the public build log, and creates one GitHub
-Release tagged `o6n-<version>`. A second dispatch of the same version stops
-because that release already exists.
-
-The orig tarball is withheld when it contains firmware bytes. OBS remains the
-apt repository. The release is the rollback copy of the accepted packages.
-
-## Accepted build archive
-
-`release-accepted.yml` runs when you dispatch it with the exact O6N package
-version, after that version has passed the board gate. It verifies the signed
-OBS repository, downloads the `linux-cix` packages of that version, the
-`.dsc`, the Debian tarball, and the public build log, and creates one GitHub
-Release tagged `o6n-<version>`. A second dispatch of the same version stops
-because that release already exists.
+Release. The tag is `o6n-<version>` with each `~` written as `_`, because Git
+rejects `~` in a tag. A second dispatch of the same version stops because
+that release already exists.
 
 The orig tarball is withheld when it contains firmware bytes. OBS remains the
 apt repository. The release is the rollback copy of the accepted packages.
