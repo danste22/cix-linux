@@ -333,7 +333,8 @@ def collect(version: str, output: pathlib.Path) -> None:
 def tag_name(version: str) -> str:
     if VERSION_RE.fullmatch(version) is None:
         raise SystemExit(f"not an O6N package version: {version}")
-    return f"o6n-{version}"
+    # Git rejects '~' in a ref. Debian maps that character to '_'.
+    return f"o6n-{version.replace('~', '_')}"
 
 
 def github_request(method: str, url: str, token: str, payload: dict | None = None, data: bytes | None = None, content_type: str | None = None):
@@ -423,7 +424,8 @@ def publish(directory: pathlib.Path, version: str, repository: str, token: str) 
 def self_test() -> None:
     assert VERSION_RE.fullmatch("7.2.12-1~bpo13+1+o6n1")
     assert VERSION_RE.fullmatch("../etc") is None
-    assert tag_name("7.2.12-1~bpo13+1+o6n1") == "o6n-7.2.12-1~bpo13+1+o6n1"
+    assert tag_name("7.2.12-1~bpo13+1+o6n1") == "o6n-7.2.12-1_bpo13+1+o6n1"
+    assert "~" not in tag_name("7.2.12-1~bpo13+1+o6n1")
     names = {"av1dec.fwb"}
     assert contains_firmware("firmware-binaries/av1dec.fwb", names)
     assert not contains_firmware("driver/if/mvx_firmware.c", names)
