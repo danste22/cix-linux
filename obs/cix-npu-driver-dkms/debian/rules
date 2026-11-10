@@ -7,13 +7,13 @@ build:
 	tar -C upstream --strip-components=1 -xf *.tar.gz
 	cd upstream && DEBEMAIL=build@o6n.invalid DEBFULLNAME='O6N Kernel Builder' \
 	  EDITOR=true VISUAL=true \
-	  dch --local o6n --distribution trixie-backports \
+	  dch --force-distribution --local o6n --distribution trixie-backports \
 	  'Rebuild for the O6N Debian 13 repository.'
 	cd upstream && dpkg-buildpackage --build=binary --no-sign
 
 binary: build
 	cp -a -- *.deb ..
-	cp upstream/debian/files debian/files
+	awk '$$1 ~ /\.deb$$/ { print }' upstream/debian/files > debian/files
 
 binary-arch: binary
 binary-indep: binary

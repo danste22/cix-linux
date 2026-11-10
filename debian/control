@@ -11,6 +11,8 @@ Build-Depends:
  cpio,
  curl,
  debhelper-compat (= 13),
+ dh-python,
+ libarchive-tools,
  debian-keyring,
  devscripts,
  flex,
