@@ -1,0 +1,103 @@
+name: Watch Debian linux source
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+    steps:
+      - name: install the Debian archive keyring
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            ca-certificates \
+            debian-archive-keyring \
+            git \
+            gnupg \
+            python3 \
+            xz-utils
+
+      - uses: actions/checkout@v4
+
+      - name: compare refs.env with trixie-backports
+        id: compare
+        run: python3 scripts/watch_debian_source.py --refs refs.env --output "$GITHUB_OUTPUT"
+
+      - name: update the watcher branch
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          VERSION: ${{ steps.compare.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B watch/debian-linux
+          python3 scripts/watch_debian_source.py --refs refs.env --write
+          git add refs.env
+          git commit -m "chore: track Debian linux ${VERSION}"
+          if git ls-remote --exit-code origin watch/debian-linux >/dev/null; then
+            git push --force-with-lease origin watch/debian-linux
+          else
+            git push -u origin watch/debian-linux
+          fi
+
+      - name: open the pull request
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.compare.outputs.version }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          repository = os.environ["REPOSITORY"]
+          version = os.environ["VERSION"]
+          token = os.environ["GH_TOKEN"]
+          owner = repository.split("/", 1)[0]
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+          }
+
+          def request(method, url, payload=None):
+              data = None if payload is None else json.dumps(payload).encode()
+              req = urllib.request.Request(url, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req) as response:
+                  return json.load(response)
+
+          pulls = request(
+              "GET",
+              "https://api.github.com/repos/"
+              f"{repository}/pulls?state=open&head={owner}:watch/debian-linux",
+          )
+          if pulls:
+              raise SystemExit(0)
+          request(
+              "POST",
+              f"https://api.github.com/repos/{repository}/pulls",
+              {
+                  "title": f"chore: track Debian linux {version}",
+                  "head": "watch/debian-linux",
+                  "base": "main",
+                  "body": (
+                      f"Debian published linux {version} in trixie-backports. "
+                      "This pull request updates the Debian source pins in refs.env "
+                      "and resets O6N_PACKAGE_VERSION to +o6n1.\n\n"
+                      "Merging it does not upload anything to OBS. After review, "
+                      "rebuild the linux-cix source package and upload that .dsc. "
+                      "NPU, VPU, firmware, and cix-o6n-repo stay on their current pins."
+                  ),
+              },
+          )
+          PY
