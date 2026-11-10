@@ -1,0 +1,29 @@
+name: Archive an accepted linux-cix build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: O6N package version, for example 7.2.12-1~bpo13+1+o6n1
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: collect the signed OBS files
+        env:
+          VERSION: ${{ inputs.version }}
+          REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/archive_obs_release.py \
+            --version "$VERSION" \
+            --output release \
+            --publish
