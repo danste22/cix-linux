@@ -1,6 +1,7 @@
 Package: linux-image-o6n{{localversion}}
 Meta-Rules-Target: meta
 Meta-Rules-Makeflags: INSTALLDOCS_LINK_DOC=linux-base-{{abiname}}{{localversion}}
+Build-Profiles: <!pkg.linux.nokernel !pkg.linux.nometa>
 Depends:
  linux-image-{{abiname}}{{localversion}} (= ${binary:Version}),
  ${misc:Depends},

@@ -1,1 +1,4 @@
 Keep: linux-libc-dev
+Prefer: gpg
+Prefer: gpgv
+Prefer: sopv-gpgv
