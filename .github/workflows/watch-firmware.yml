@@ -1,0 +1,113 @@
+name: Watch CIX firmware branch
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: compare the firmware pin with the branch
+        run: |
+          python3 scripts/watch_firmware_upstream.py \
+            --refs refs.env \
+            --manifest firmware/manifest.txt \
+            --json-output firmware-watch.json
+
+      - name: open or close the firmware issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          repository = os.environ["REPOSITORY"]
+          token = os.environ["GH_TOKEN"]
+          report = json.loads(open("firmware-watch.json", encoding="utf-8").read())
+          title = "CIX firmware branch cix_p1_k6.6_master moved"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+          }
+
+          def request(method, url, payload=None):
+              data = None if payload is None else json.dumps(payload).encode()
+              req = urllib.request.Request(url, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req) as response:
+                  raw = response.read()
+                  return json.loads(raw) if raw else {}
+
+          issues = request(
+              "GET",
+              f"https://api.github.com/repos/{repository}/issues?state=open&per_page=100",
+          )
+          existing = next(
+              (
+                  item
+                  for item in issues
+                  if item["title"] == title and "pull_request" not in item
+              ),
+              None,
+          )
+          state = report["state"]
+          if state == "current":
+              if existing is not None:
+                  request(
+                      "PATCH",
+                      f"https://api.github.com/repos/{repository}/issues/{existing['number']}",
+                      {"state": "closed"},
+                  )
+              raise SystemExit(0)
+          lines = [
+              f"Branch `cix_p1_k6.6_master` is `{report['head']}`.",
+              f"The pin `CIX_FIRMWARE_COMMIT` is `{report['pinned']}`.",
+              "",
+              "https://github.com/cixtech/cix_proprietary__cix_proprietary/tree/cix_p1_k6.6_master",
+              "",
+          ]
+          if state == "branch-moved":
+              lines.extend(
+                  [
+                      "The 17 firmware files still match `firmware/manifest.txt`.",
+                      "No provisioning change is required.",
+                      "Update the pin only when the installer should follow this commit.",
+                  ]
+              )
+          else:
+              lines.append("These firmware files changed:")
+              lines.append("")
+              for item in report["changed_files"]:
+                  lines.append(
+                      f"- `{item['name']}` pinned `{item['pinned_sha256']}` "
+                      f"head `{item['head_sha256']}`"
+                  )
+              lines.extend(
+                  [
+                      "",
+                      "The installer keeps the pinned commit until a pull request updates it.",
+                  ]
+              )
+          body = "\n".join(lines) + "\n"
+          if existing is None:
+              request(
+                  "POST",
+                  f"https://api.github.com/repos/{repository}/issues",
+                  {"title": title, "body": body},
+              )
+          elif existing.get("body") != body:
+              request(
+                  "PATCH",
+                  f"https://api.github.com/repos/{repository}/issues/{existing['number']}",
+                  {"body": body},
+              )
+          PY

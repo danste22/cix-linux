@@ -85,45 +85,102 @@ The signed repository is `artifacts/repo/`.
 
 ## Install on a fresh board
 
-Use a Debian 13 netinstall. Secure Boot stays off. Trixie `main` is already
-present. Add `contrib` there, and add backports with `contrib` and
-`non-free-firmware`. Copy `artifacts/repo` to `/var/tmp/o6n-repo` on the board.
-The package names match the current `refs.env` pin.
+`artifacts/repo/` is the local development repository from `make repo`. A
+board installs from the public OBS repository.
+
+Use a Debian 13 netinstall. Secure Boot stays off. Add `contrib` to trixie,
+and add backports with `contrib` and `non-free-firmware`:
 
 ```bash
-printf '%s\n' 'deb http://deb.debian.org/debian trixie-backports main contrib non-free-firmware' \
+printf '%s\n' \
+  'deb http://deb.debian.org/debian trixie main contrib' \
+  'deb http://deb.debian.org/debian trixie-backports main contrib non-free-firmware' \
   > /etc/apt/sources.list.d/backports.list
-install -d /etc/apt/keyrings
-cp /var/tmp/o6n-repo/o6n-local-repo.asc /etc/apt/keyrings/o6n-local.asc
-cat > /etc/apt/sources.list.d/o6n-local.sources <<'EOF'
-Types: deb
-URIs: file:/var/tmp/o6n-repo
-Suites: ./
-Signed-By: /etc/apt/keyrings/o6n-local.asc
-EOF
 apt-get update
 apt-get install -y -t trixie-backports linux-base firmware-misc-nonfree
+```
+
+Download `cix-o6n-repo` and read its key before trusting it. Stop if the
+fingerprint is not `153D A567 0563 C430 55B8 2A20 8F66 A7C1 646C C2EA`.
+
+```bash
+curl -fsSLO https://download.opensuse.org/repositories/home:/danste22:/o6n-debian-13/backports/all/cix-o6n-repo_1.0.0+o6n1_all.deb
+mkdir -p /tmp/o6n-repo-check
+dpkg-deb -x cix-o6n-repo_1.0.0+o6n1_all.deb /tmp/o6n-repo-check
+gpg --show-keys --with-fingerprint /tmp/o6n-repo-check/usr/share/keyrings/o6n-debian-13.asc
+dpkg -i cix-o6n-repo_1.0.0+o6n1_all.deb
+apt-get update
 apt-get install -y \
-  linux-image-7.2.12+deb13o6n.1-arm64 \
-  linux-headers-7.2.12+deb13o6n.1-arm64 \
-  linux-kbuild-7.2.12+deb13o6n.1 \
+  linux-image-o6n-arm64 \
+  linux-headers-o6n-arm64 \
   cix-npu-driver-dkms \
   cix-vpu-driver-dkms \
+  cix-vpu-libc-dev \
   cix-o6n-firmware-install
 printf '%s\n' 'GRUB_CMDLINE_LINUX="clk_ignore_unused"' > /etc/default/grub.d/o6n-clk.cfg
 update-grub
 reboot
 ```
 
-After the second boot into `7.2.12+deb13o6n.1-arm64`, run
+`linux-headers-o6n-arm64` pulls the matching headers, kbuild, and common
+headers. Configuring `cix-o6n-firmware-install` downloads the 17 CIX firmware
+files. After the next boot into `7.2.12+deb13o6n.1-arm64`, run
 `scripts/board/boot-evidence.sh` and `scripts/board/accelerator-test.sh` as
 root.
+
+## Unattended kernel upgrades
+
+A newer `linux-image-o6n-arm64` in OBS is not an accepted board kernel.
+Debian's default unattended-upgrades origins do not include this OBS
+repository. Leave the origin out of `Unattended-Upgrade::Allowed-Origins`.
+Blacklist the metapackages as well:
+
+```bash
+cat > /etc/apt/apt.conf.d/51o6n-unattended-upgrades <<'EOF'
+Unattended-Upgrade::Package-Blacklist {
+    "linux-image-o6n-arm64";
+    "linux-headers-o6n-arm64";
+};
+EOF
+```
+
+Install the next O6N kernel by hand after the board gate passes. The previous
+O6N kernel stays selectable in GRUB.
+
+## Firmware files
+
+This repository, the OBS packages, and the GitHub Release do not contain the
+17 CIX firmware files. `cix-o6n-firmware-install` downloads them when the
+package is configured. The postinst runs `/usr/sbin/cix-o6n-firmware-fetch`.
+Run that command again as root to repeat the download. Every file must match
+`manifest.txt` before any file is installed.
+
+The files are in
+[cixtech/cix_proprietary__cix_proprietary](https://github.com/cixtech/cix_proprietary__cix_proprietary/tree/cix_p1_k6.6_master)
+on branch `cix_p1_k6.6_master`, at commit
+`6260fd1a596a6135a198f0f220e6ed70f3210532`. The installer uses that commit.
+It does not follow the branch tip. `dsp_fw.bin` is
+`cix_proprietary-debs/cix-audio-dsp/usr/lib/firmware/dsp_fw.bin`. The 16
+`.fwb` files are in
+`cix_proprietary-debs/cix-vpu-umd/usr/lib/firmware/`. Browse that tree to
+inspect them. A new firmware commit is a separate pull request.
+
+`watch-firmware.yml` runs daily. It compares branch `cix_p1_k6.6_master` with
+`CIX_FIRMWARE_COMMIT` and hashes the same 17 files. One issue opens when the
+branch moves. The issue names each file whose sha256 changed. When every file
+still matches, the issue says the provisioning pin can stay. The workflow
+does not change the manifest or the pin. The issue closes when the pin and
+the branch head are the same commit again.
+
+Mali CSF firmware comes from Debian `firmware-misc-nonfree` at
+`/usr/lib/firmware/arm/mali/arch12.8/mali_csffw.bin`. The CIX tree also has a
+`mali_csffw.bin`. This project does not install that copy.
 
 ## Board requirements
 
 - UEFI hardware description: ACPI
 - Kernel command line: `clk_ignore_unused`
-- Secure Boot: disabled for the initial unsigned build
+- Secure Boot: off. The kernel is unsigned (`enable_signed = false`), and the NPU and VPU modules are unsigned DKMS modules. Secure Boot would refuse that kernel. Signing stays parked.
 - Debian trixie-backports with `non-free-firmware` enabled
 
 ## Board validation
@@ -148,7 +205,7 @@ not removed with those packages.
 
 ## ZFS DKMS board test
 
-This test runs on the O6N after the local kernel, headers, NPU, and VPU
+This test runs on the O6N after the kernel, headers, NPU, and VPU
 packages are installed. It uses Debian's `zfs-dkms` package. This repository
 does not build OpenZFS.
 
