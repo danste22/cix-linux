@@ -8,8 +8,8 @@ build:
 		linux_7.2.12-1~bpo13+1.debian.tar.xz; do \
 	  if [ -f $$file ]; then mv $$file downloads/debian/; fi; \
 	done
-	if [ -f 695c93e169e83a852f2127d142a1e6993cb9e0fa.tar.gz ]; then \
-	  mv 695c93e169e83a852f2127d142a1e6993cb9e0fa.tar.gz \
+	if [ -f ccdd9eb57fc256a698f3449ec8880824249b8e6e.tar.gz ]; then \
+	  mv ccdd9eb57fc256a698f3449ec8880824249b8e6e.tar.gz \
 	    upstream/cix-linux-main.tar.gz; \
 	fi
 	if [ -f 31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz ]; then \

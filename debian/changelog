@@ -1,3 +1,9 @@
+linux-cix (7.2.12-1~bpo13+1+o6n2) trixie-backports; urgency=medium
+
+  * Build the arm64 O6N kernel from cix-linux-main ccdd9eb.
+
+ -- Daniel <danste22@users.noreply.github.com>  Thu, 12 Nov 2026 13:56:00 +0100
+
 linux-cix (7.2.12-1~bpo13+1+o6n1) trixie-backports; urgency=medium
 
   * Build the arm64 O6N kernel from the pinned Debian source package.
