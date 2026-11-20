@@ -9,20 +9,20 @@
   <service name="download_url">
     <param name="protocol">https</param>
     <param name="host">deb.debian.org</param>
-    <param name="path">/debian/pool/main/l/linux/linux_7.2.12-1~bpo13+1.dsc</param>
-    <param name="filename">linux_7.2.12-1~bpo13+1.dsc</param>
+    <param name="path">/debian/pool/main/l/linux/linux_7.3.4-1~bpo13+1.dsc</param>
+    <param name="filename">linux_7.3.4-1~bpo13+1.dsc</param>
   </service>
   <service name="download_url">
     <param name="protocol">https</param>
     <param name="host">deb.debian.org</param>
-    <param name="path">/debian/pool/main/l/linux/linux_7.2.12.orig.tar.xz</param>
-    <param name="filename">linux_7.2.12.orig.tar.xz</param>
+    <param name="path">/debian/pool/main/l/linux/linux_7.3.4.orig.tar.xz</param>
+    <param name="filename">linux_7.3.4.orig.tar.xz</param>
   </service>
   <service name="download_url">
     <param name="protocol">https</param>
     <param name="host">deb.debian.org</param>
-    <param name="path">/debian/pool/main/l/linux/linux_7.2.12-1~bpo13+1.debian.tar.xz</param>
-    <param name="filename">linux_7.2.12-1~bpo13+1.debian.tar.xz</param>
+    <param name="path">/debian/pool/main/l/linux/linux_7.3.4-1~bpo13+1.debian.tar.xz</param>
+    <param name="filename">linux_7.3.4-1~bpo13+1.debian.tar.xz</param>
   </service>
   <service name="download_url">
     <param name="protocol">https</param>
