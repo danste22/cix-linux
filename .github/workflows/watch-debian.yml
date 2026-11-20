@@ -22,7 +22,7 @@ jobs:
             ca-certificates \
             debian-archive-keyring \
             git \
-            gnupg \
+            gpgv \
             python3 \
             xz-utils
 
