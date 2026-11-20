@@ -14,6 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: debian:trixie
+    # checkout keeps safe.directory in a temporary global config and removes
+    # that config when the step ends. This container runs as root against a
+    # workspace owned by the runner, so later git commands exit 128 without it.
+    env:
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: safe.directory
+      GIT_CONFIG_VALUE_0: "*"
     steps:
       - name: install the Debian archive keyring
         run: |
@@ -27,6 +34,8 @@ jobs:
             xz-utils
 
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: compare refs.env with trixie-backports
         id: compare
@@ -39,12 +48,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B watch/debian-linux
+          git fetch origin main
+          git checkout -B watch/debian-linux origin/main
           python3 scripts/watch_debian_source.py --refs refs.env --write
           git add refs.env
           git commit -m "chore: track Debian linux ${VERSION}"
-          if git ls-remote --exit-code origin watch/debian-linux >/dev/null; then
-            git push --force-with-lease origin watch/debian-linux
+          remote_sha=$(git ls-remote origin refs/heads/watch/debian-linux | awk 'NR==1 {print $1}')
+          if [ -n "$remote_sha" ]; then
+            git push --force-with-lease="refs/heads/watch/debian-linux:${remote_sha}" origin refs/heads/watch/debian-linux
           else
             git push -u origin watch/debian-linux
           fi
