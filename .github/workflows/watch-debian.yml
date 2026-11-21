@@ -33,7 +33,7 @@ jobs:
             python3 \
             xz-utils
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
 
