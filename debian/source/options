@@ -1,0 +1,13 @@
+# Keep the downloaded Debian source and CIX archives out of the native
+# source package. debian/rules moves them into downloads/ and upstream/
+# for scripts/10-fetch-upstream.sh.
+tar-ignore=linux_7.3.4*
+tar-ignore=linux_7.3.4-1~bpo13+1.dsc.download
+tar-ignore=_service:*
+tar-ignore=4b094148*
+tar-ignore=31ee26f0*
+tar-ignore=eda5e924*
+tar-ignore=downloads
+tar-ignore=upstream
+tar-ignore=src
+tar-ignore=artifacts

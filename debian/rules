@@ -4,22 +4,38 @@
 
 build:
 	mkdir -p downloads/debian upstream
-	for file in linux_7.3.4-1~bpo13+1.dsc linux_7.3.4.orig.tar.xz \
-		linux_7.3.4-1~bpo13+1.debian.tar.xz; do \
-	  if [ -f $$file ]; then mv $$file downloads/debian/; fi; \
-	done
-	if [ -f 4b09414871825c48935a094e46dbdda9a1587fe0.tar.gz ]; then \
-	  mv 4b09414871825c48935a094e46dbdda9a1587fe0.tar.gz \
-	    upstream/cix-linux-main.tar.gz; \
-	fi
-	if [ -f 31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz ]; then \
-	  mv 31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz \
-	    upstream/cix-npu-driver.tar.gz; \
-	fi
-	if [ -f eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz ]; then \
-	  mv eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz \
-	    upstream/cix-vpu-driver.tar.gz; \
-	fi
+	# OBS leaves service files at the source root, prefixed with
+	# _service:<service>:. The Debian dsc is stored as *.dsc.download so
+	# obs-build selects debian/control. Rename the inputs before fetch.
+	set -eu; \
+	take() { \
+	  dest="$$1"; shift; \
+	  for pattern in "$$@"; do \
+	    for match in $$pattern; do \
+	      if [ -f "$$match" ]; then mv "$$match" "$$dest"; return 0; fi; \
+	    done; \
+	  done; \
+	}; \
+	take downloads/debian/linux_7.3.4-1~bpo13+1.dsc \
+	  linux_7.3.4-1~bpo13+1.dsc.download \
+	  '_service:*:linux_7.3.4-1~bpo13+1.dsc.download' \
+	  linux_7.3.4-1~bpo13+1.dsc \
+	  '_service:*:linux_7.3.4-1~bpo13+1.dsc'; \
+	take downloads/debian/linux_7.3.4.orig.tar.xz \
+	  linux_7.3.4.orig.tar.xz \
+	  '_service:*:linux_7.3.4.orig.tar.xz'; \
+	take downloads/debian/linux_7.3.4-1~bpo13+1.debian.tar.xz \
+	  linux_7.3.4-1~bpo13+1.debian.tar.xz \
+	  '_service:*:linux_7.3.4-1~bpo13+1.debian.tar.xz'; \
+	take upstream/cix-linux-main.tar.gz \
+	  4b09414871825c48935a094e46dbdda9a1587fe0.tar.gz \
+	  '_service:*:4b09414871825c48935a094e46dbdda9a1587fe0.tar.gz'; \
+	take upstream/cix-npu-driver.tar.gz \
+	  31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz \
+	  '_service:*:31ee26f0b5f768d20d1fea65c2360eed7303a0a1.tar.gz'; \
+	take upstream/cix-vpu-driver.tar.gz \
+	  eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz \
+	  '_service:*:eda5e92484f899efbc1f8ca9d9eb36dcff666d7a.tar.gz'
 	./scripts/10-fetch-upstream.sh
 	./scripts/20-assemble-source.sh
 	./scripts/21-kernel-config.sh

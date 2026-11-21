@@ -6,11 +6,12 @@
     <param name="revision">main</param>
     <param name="version">_none_</param>
   </service>
+  <!-- Not *.dsc: obs-build would select this file instead of debian/control. -->
   <service name="download_url">
     <param name="protocol">https</param>
     <param name="host">deb.debian.org</param>
     <param name="path">/debian/pool/main/l/linux/linux_7.3.4-1~bpo13+1.dsc</param>
-    <param name="filename">linux_7.3.4-1~bpo13+1.dsc</param>
+    <param name="filename">linux_7.3.4-1~bpo13+1.dsc.download</param>
   </service>
   <service name="download_url">
     <param name="protocol">https</param>
