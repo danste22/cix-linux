@@ -52,7 +52,6 @@ $(STAMP_DIR)/fetch: $(STAMP_DIR)/init scripts/10-fetch-upstream.sh refs.env
 	touch $@
 
 $(STAMP_DIR)/source: $(STAMP_DIR)/fetch scripts/20-assemble-source.sh \
-		scripts/lib/rewrite-cix-0013-context.py \
 		$(wildcard patches/o6n/*.patch) refs.env
 	$(COMPOSE) run --rm source ./scripts/20-assemble-source.sh
 	touch $@

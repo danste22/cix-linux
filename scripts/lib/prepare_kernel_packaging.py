@@ -61,6 +61,8 @@ def install_o6n_metapackages(source_tree: pathlib.Path) -> None:
             packages_own.extend(bundle_signed.add('base.meta', ruleid, makeflags, vars, arch=arch))
             packages_own.extend(bundle_signed.add('image.meta', ruleid, makeflags, vars, arch=arch))
             packages_own.extend(
+                bundle_signed.add('modules.meta', ruleid, makeflags, vars, arch=arch))
+            packages_own.extend(
                 bundle_signed.add('headers.meta', ruleid, makeflags, vars, arch=arch))
             packages_own.extend(
                 bundle_signed.add('image-dbg.meta', ruleid, makeflags, vars, arch=arch))
