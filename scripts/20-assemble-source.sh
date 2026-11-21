@@ -9,7 +9,6 @@ source "${SCRIPT_DIR}/lib/common.sh"
 require_command dch
 require_command bsdtar
 require_command dpkg-source
-require_command python3
 require_command quilt
 
 debian_dir="${DOWNLOADS_DIR}/debian"
@@ -48,13 +47,6 @@ mapfile -t cix_patches < <(find "${patch_source}" -maxdepth 1 -type f -name '*.p
 for patch in "${cix_patches[@]}"; do
   name="cix/$(basename "${patch}")"
   cp "${patch}" "${source_tree}/debian/patches/${name}"
-  if [[ "$(basename "${patch}")" == \
-        "0013-DPTSW-26459-sound-hda-rework-cix-ipbloq-based-on-mai.patch" ]]; then
-    # GNU patch treats this upstream hunk's 12+2 asymmetric context as an
-    # end-of-file match. Keep the same change with balanced 2+2 context.
-    python3 "${SCRIPT_DIR}/lib/rewrite-cix-0013-context.py" \
-      "${source_tree}/debian/patches/${name}"
-  fi
   printf '%s\n' "${name}" >> "${source_tree}/debian/patches/series"
 done
 
