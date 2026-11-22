@@ -12,10 +12,16 @@ move-inputs:
 	  done; \
 	done
 
-build: move-inputs
+# dpkg-buildpackage -b calls debian/rules binary and does not call build.
+# The stamp keeps a later build+binary sequence from compiling twice.
+.stamp-build:
+	$(MAKE) move-inputs
 	$(MAKE) -C cix-linux -f debian/rules build
+	touch $@
 
-binary binary-arch binary-indep:
+build: .stamp-build
+
+binary binary-arch binary-indep: .stamp-build
 	$(MAKE) -C cix-linux -f debian/rules binary
 	cp cix-linux/debian/files debian/files
 	while read -r name _; do cp "$$name" ..; done < debian/files
@@ -24,6 +30,6 @@ clean:
 	if [ -f cix-linux/debian/rules ]; then \
 	  $(MAKE) -C cix-linux -f debian/rules clean; \
 	fi
-	rm -f debian/files
+	rm -f debian/files .stamp-build
 
 .PHONY: move-inputs build binary binary-arch binary-indep clean
