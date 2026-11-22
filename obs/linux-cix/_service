@@ -1,10 +1,22 @@
 <services>
   <!-- Source service has network. The later build runs debian/rules offline. -->
+  <!-- Packs cix-linux/. debian.control is the only name the scheduler accepts. -->
   <service name="obs_scm">
     <param name="url">https://github.com/danste22/cix-linux.git</param>
     <param name="scm">git</param>
     <param name="revision">main</param>
     <param name="version">_none_</param>
+    <param name="extract-rename">debian/control:debian.control</param>
+    <param name="extract-rename">debian/changelog:debian.changelog</param>
+  </service>
+  <!-- Unpacks as debian/ at the source root. osc cannot store that path. -->
+  <service name="obs_scm">
+    <param name="url">https://github.com/danste22/cix-linux.git</param>
+    <param name="scm">git</param>
+    <param name="revision">main</param>
+    <param name="version">_none_</param>
+    <param name="subdir">obs/linux-cix/debian</param>
+    <param name="filename">debian</param>
   </service>
   <!-- Not *.dsc: obs-build would select this file instead of debian/control. -->
   <service name="download_url">
