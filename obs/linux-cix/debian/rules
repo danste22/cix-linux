@@ -3,7 +3,10 @@
 # obs_scm unpacks the git tree as cix-linux/. dpkg-buildpackage needs
 # debian/ in this directory. The real build is cix-linux/debian/rules.
 
-move-inputs:
+# dpkg-buildpackage -b calls debian/rules binary and does not call build.
+# Do not recurse with $(MAKE) for a target in this file: that make looks
+# for Makefile, not debian/rules.
+.stamp-build:
 	set -eu; \
 	mkdir -p cix-linux; \
 	for pattern in linux_7.3.4* 4b094148*.tar.gz 31ee26f0*.tar.gz eda5e924*.tar.gz; do \
@@ -11,11 +14,6 @@ move-inputs:
 	    if [ -f "$$match" ]; then mv "$$match" cix-linux/; fi; \
 	  done; \
 	done
-
-# dpkg-buildpackage -b calls debian/rules binary and does not call build.
-# The stamp keeps a later build+binary sequence from compiling twice.
-.stamp-build:
-	$(MAKE) move-inputs
 	$(MAKE) -C cix-linux -f debian/rules build
 	touch $@
 
@@ -32,4 +30,4 @@ clean:
 	fi
 	rm -f debian/files .stamp-build
 
-.PHONY: move-inputs build binary binary-arch binary-indep clean
+.PHONY: build binary binary-arch binary-indep clean
