@@ -1,0 +1,17 @@
+linux-cix (7.3.4-1~bpo13+1+o6n1) trixie-backports; urgency=medium
+
+  * Build the arm64 O6N kernel from Debian 7.3.4 and cix-linux-main patches-7.3.
+
+ -- Daniel <danste22@users.noreply.github.com>  Fri, 20 Nov 2026 22:40:00 +0100
+
+linux-cix (7.2.12-1~bpo13+1+o6n2) trixie-backports; urgency=medium
+
+  * Build the arm64 O6N kernel from cix-linux-main ccdd9eb.
+
+ -- Daniel <danste22@users.noreply.github.com>  Thu, 12 Nov 2026 13:56:00 +0100
+
+linux-cix (7.2.12-1~bpo13+1+o6n1) trixie-backports; urgency=medium
+
+  * Build the arm64 O6N kernel from the pinned Debian source package.
+
+ -- Daniel <danste22@users.noreply.github.com>  Mon, 10 Nov 2026 00:00:00 +0100

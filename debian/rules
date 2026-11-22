@@ -41,7 +41,9 @@ build:
 	./scripts/21-kernel-config.sh
 	./scripts/30-build-kernel.sh
 
-binary: build
+# dpkg-buildpackage calls build before binary. Depending on build here
+# compiles the kernel a second time.
+binary:
 	python3 scripts/lib/collect-kernel-debs.py "$(CURDIR)"
 
 binary-arch: binary

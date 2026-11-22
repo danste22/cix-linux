@@ -5,9 +5,6 @@
     <param name="scm">git</param>
     <param name="revision">main</param>
     <param name="version">_none_</param>
-    <!-- Basename "control" is not a recipe. debian.control is. -->
-    <param name="extract-rename">debian/control:debian.control</param>
-    <param name="extract">debian/changelog</param>
   </service>
   <!-- Not *.dsc: obs-build would select this file instead of debian/control. -->
   <service name="download_url">

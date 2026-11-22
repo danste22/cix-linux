@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+# SPDX-License-Identifier: GPL-3.0-or-later
+# obs_scm unpacks the git tree as cix-linux/. dpkg-buildpackage needs
+# debian/ in this directory. The real build is cix-linux/debian/rules.
+
+move-inputs:
+	set -eu; \
+	mkdir -p cix-linux; \
+	for pattern in linux_7.3.4* 4b094148*.tar.gz 31ee26f0*.tar.gz eda5e924*.tar.gz; do \
+	  for match in $$pattern; do \
+	    if [ -f "$$match" ]; then mv "$$match" cix-linux/; fi; \
+	  done; \
+	done
+
+build: move-inputs
+	$(MAKE) -C cix-linux -f debian/rules build
+
+binary binary-arch binary-indep:
+	$(MAKE) -C cix-linux -f debian/rules binary
+	cp cix-linux/debian/files debian/files
+	while read -r name _; do cp "$$name" ..; done < debian/files
+
+clean:
+	if [ -f cix-linux/debian/rules ]; then \
+	  $(MAKE) -C cix-linux -f debian/rules clean; \
+	fi
+	rm -f debian/files
+
+.PHONY: move-inputs build binary binary-arch binary-indep clean
